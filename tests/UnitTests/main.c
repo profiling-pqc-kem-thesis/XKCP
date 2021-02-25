@@ -21,17 +21,6 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "testPermutations.h"
 #include "testSponge.h"
 #include "testDuplex.h"
-#include "testPRG.h"
-#include "testSP800-185.h"
-#include "testKangarooTwelve.h"
-#include "testKetjev2.h"
-#include "testMotorist.h"
-#include "testKeyakv2.h"
-#include "testKravatte.h"
-#include "testKravatteModes.h"
-#include "testXoofff.h"
-#include "testXoofffModes.h"
-#include "testXoodyak.h"
 
 #ifdef KeccakReference
 #include "displayIntermediateValues.h"
@@ -501,32 +490,8 @@ void printHelp()
 #ifdef XKCP_has_Duplex_Keccak
         printf("  --KeccakDuplex            Tests on Keccak duplex\n");
 #endif
-#ifdef XKCP_has_PRG_Keccak
-        printf("  --KeccakPRG               Tests on KeccakPRG\n");
-#endif
 #ifdef XKCP_has_FIPS202
         printf("  --FIPS202 or -f           Tests on FIPS202 and ShortMsgKAT generation\n");
-#endif
-#ifdef XKCP_has_SP800_185
-        printf("  --SP800-185               Tests on SP800-185 functions\n");
-#endif
-#ifdef XKCP_has_Keyak
-        printf("  --Keyak or -y             Tests on the Keyak authentication encryption scheme\n");
-#endif
-#ifdef XKCP_has_Ketje
-        printf("  --Ketje or -t             Tests on the Ketje authentication encryption scheme\n");
-#endif
-#ifdef XKCP_has_KangarooTwelve
-        printf("  --KangarooTwelve or -K12  Tests on KangarooTwelve\n");
-#endif
-#ifdef XKCP_has_Kravatte
-        printf("  --Kravatte                Tests on Kravatte\n");
-#endif
-#ifdef XKCP_has_Xoofff
-        printf("  --Xoofff                  Tests on Xoofff\n");
-#endif
-#ifdef XKCP_has_Xoodyak
-        printf("  --Xoodyak                 Tests on Xoodyak\n");
 #endif
 #ifdef KeccakReference
         printf("  --examples or -e          Generation of example files\n");
@@ -540,15 +505,7 @@ int process(int argc, char* argv[])
     int SnP = 0;
     int KeccakSponge = 0;
     int KeccakDuplex = 0;
-    int KeccakPRG = 0;
     int FIPS202 = 0;
-    int Keyak = 0;
-    int Ketje = 0;
-    int KangarooTwelve = 0;
-    int Kravatte = 0;
-    int SP800_185 = 0;
-    int Xoofff = 0;
-    int Xoodyak = 0;
     int examples = 0;
 
     if (argc == 1)
@@ -558,7 +515,7 @@ int process(int argc, char* argv[])
         if ((strcmp("--help", argv[i]) == 0) || (strcmp("-h", argv[i]) == 0))
             help = 1;
         else if ((strcmp("--all", argv[i]) == 0) || (strcmp("-a", argv[i]) == 0))
-            SnP = KeccakSponge = KeccakDuplex = KeccakPRG = FIPS202 = Keyak = Ketje = KangarooTwelve = Kravatte = SP800_185 = examples = Xoofff = Xoodyak = 1;
+            SnP = KeccakSponge = KeccakDuplex = FIPS202 = examples = 1;
         else if ((strcmp("--SnP", argv[i]) == 0) || (strcmp("-p", argv[i]) == 0))
             SnP = 1;
 #if defined (XKCP_has_Sponge_Keccak) || defined(XKCP_has_Duplex_Keccak)
@@ -573,39 +530,9 @@ int process(int argc, char* argv[])
         else if (strcmp("--KeccakDuplex", argv[i]) == 0)
             KeccakDuplex = 1;
 #endif
-#ifdef XKCP_has_PRG_Keccak
-        else if (strcmp("--KeccakPRG", argv[i]) == 0)
-            KeccakPRG = 1;
-#endif
 #ifdef XKCP_has_FIPS202
         else if ((strcmp("--FIPS202", argv[i]) == 0) || (strcmp("-f", argv[i]) == 0))
             FIPS202 = 1;
-#endif
-#ifdef XKCP_has_Keyak
-        else if ((strcmp("--Keyak", argv[i]) == 0) || (strcmp("-y", argv[i]) == 0))
-            Keyak = 1;
-#endif
-#ifdef XKCP_has_Ketje
-        else if ((strcmp("--Ketje", argv[i]) == 0) || (strcmp("-t", argv[i]) == 0))
-            Ketje = 1;
-#endif
-        else if ((strcmp("--KangarooTwelve", argv[i]) == 0) || (strcmp("-K12", argv[i]) == 0))
-            KangarooTwelve = 1;
-#ifdef XKCP_has_Kravatte
-        else if (strcmp("--Kravatte", argv[i]) == 0)
-            Kravatte = 1;
-#endif
-#ifdef XKCP_has_SP800_185
-        else if (strcmp("--SP800-185", argv[i]) == 0)
-            SP800_185 = 1;
-#endif
-#ifdef XKCP_has_Xoofff
-        else if (strcmp("--Xoofff", argv[i]) == 0)
-            Xoofff = 1;
-#endif
-#ifdef XKCP_has_Xoodyak
-        else if (strcmp("--Xoodyak", argv[i]) == 0)
-            Xoodyak = 1;
 #endif
 #ifdef KeccakReference
         else if ((strcmp("--examples", argv[i]) == 0) || (strcmp("-e", argv[i]) == 0))
@@ -633,42 +560,10 @@ int process(int argc, char* argv[])
         testDuplex();
     }
 #endif
-#ifdef XKCP_has_KangarooTwelve
-    if (KangarooTwelve) {
-        testKangarooTwelve();
-    }
-#endif
-#ifdef XKCP_has_SP800_185
-    if (SP800_185) {
-        testSP800_185();
-    }
-#endif
-#ifdef XKCP_has_PRG_Keccak
-    if (KeccakPRG) {
-        testPRG();
-    }
-#endif
 #ifdef XKCP_has_FIPS202
     if (FIPS202) {
         testFIPS202();
         genKAT_main();
-    }
-#endif
-#ifdef XKCP_has_Keyak
-    if (Keyak) {
-        testMotorist();
-        testKeyak();
-    }
-#endif
-#ifdef XKCP_has_Ketje
-    if (Ketje) {
-        testKetje();
-    }
-#endif
-#ifdef XKCP_has_Kravatte
-    if (Kravatte) {
-        testKravatte();
-        testKravatteModes();
     }
 #endif
 #ifdef KeccakReference
@@ -687,17 +582,6 @@ int process(int argc, char* argv[])
 #endif
         displaySpongeIntermediateValues();
         displayDuplexIntermediateValues();
-    }
-#endif
-#ifdef XKCP_has_Xoofff
-    if (Xoofff) {
-        testXoofff();
-        testXoofffModes();
-    }
-#endif
-#ifdef XKCP_has_Xoodyak
-    if (Xoodyak) {
-        testXoodyak();
     }
 #endif
     return 0;

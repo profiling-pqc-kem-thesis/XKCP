@@ -102,12 +102,12 @@ void convertShortMsgToPureLSB(void)
     BitSequence Msg[256];
     FILE        *fp_in, *fp_out;
 
-    if ( (fp_in = fopen("ShortMsgKAT.txt", "r")) == NULL ) {
+    if ( (fp_in = fopen("tests/TestVectors/ShortMsgKAT.txt", "r")) == NULL ) {
         printf("Couldn't open <ShortMsgKAT.txt> for read\n");
         return;
     }
 
-    if ( (fp_out = fopen("ShortMsgKAT-PureLSB.txt", "w")) == NULL ) {
+    if ( (fp_out = fopen("tests/TestVectors/ShortMsgKAT-PureLSB.txt", "w")) == NULL ) {
         printf("Couldn't open <%s> for write\n", "ShortMsgKAT-PureLSB.txt");
         return;
     }
@@ -151,7 +151,7 @@ genShortMsgHash(unsigned int rate, unsigned int capacity, unsigned char delimite
         return KAT_HASH_ERROR;
     }
 
-    if ( (fp_in = fopen("ShortMsgKAT.txt", "r")) == NULL ) {
+    if ( (fp_in = fopen("tests/TestVectors/ShortMsgKAT.txt", "r")) == NULL ) {
         printf("Couldn't open <ShortMsgKAT.txt> for read\n");
         return KAT_FILE_OPEN_ERROR;
     }
