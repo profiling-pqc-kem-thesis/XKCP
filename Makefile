@@ -1,3 +1,5 @@
+MAKEFLAGS += --silent
+
 export CCFLAGS := $(CCFLAGS) -O3 -Wall -Wextra -pedantic -Wno-unused-parameter -march=native -fno-omit-frame-pointer -g
 
 # -------------- library --------------
@@ -15,17 +17,17 @@ source_s := $(source) $(shell find * -type f -name "*.s" -regextype posix-egrep 
 objects_c := $(addprefix build/, $(source_c:.c=.o))
 objects_s := $(addprefix build/, $(source_s:.s=.o))
 
-implementations := $(shell find build/* -maxdepth 0 -type d | grep -v "build/lib")
+implementations := $(shell find build/* -maxdepth 0 -type d 2>/dev/null | grep -v "build/lib")
 
 # -------------- tests --------------
 test_headers := $(shell find tests/UnitTests/ -type f -name "*.h")
 test_source := $(shell find tests/UnitTests/ -type f -name "*.c")
 
 
-.PHONY: library clean main
+.PHONY: library clean main test
 
 main: main.c
-	$(foreach implementation, $(implementations), $(shell $(CC) $(CCFLAGS) -o $(implementation).out main.c -I $(implementation)/keccak/libkeccak.a.headers -L $(implementation)/keccak -lkeccak))
+	$(foreach implementation, $(implementations), $(shell $(CC) $(CCFLAGS) -o $(implementation)/main.out main.c -I $(implementation)/keccak/libkeccak.a.headers -L $(implementation)/keccak -lkeccak))
 
 plain-64bits/lcu6:
 	TARGET="plain-64bits" SUB_TARGET="lcu6" $(MAKE) library
@@ -87,7 +89,7 @@ $(objects_s): build/%.o: %.s $(headers)
 	$(CC) $(CCFLAGS) -c -o $@ $< $(header_directories)
 
 test: $(test_source) $(test_headers)
-	$(foreach implementation, $(implementations), $(shell $(CC) $(CCFLAGS) -o $(implementation)Test.out $(test_source) -I $(implementation)/keccak/libkeccak.a.headers -L $(implementation)/keccak -lkeccak))
+	$(foreach implementation, $(implementations), $(shell $(CC) $(CCFLAGS) -o $(implementation)/test.out $(test_source) -I $(implementation)/keccak/libkeccak.a.headers -L $(implementation)/keccak -lkeccak))
 
 clean:
-	rm -rf build/
+	rm -rf build/ ShortMsgKAT_SHA3-224.txt ShortMsgKAT_SHA3-256.txt ShortMsgKAT_SHA3-384.txt ShortMsgKAT_SHA3-512.txt ShortMsgKAT_SHAKE128.txt ShortMsgKAT_SHAKE256.txt
