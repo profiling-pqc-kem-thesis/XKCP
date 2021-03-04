@@ -10,9 +10,8 @@ endif
 headers := $(foreach header_directory, $(header_directories), $(shell ls -d $(header_directory)* | grep "\.h"))
 header_directories := $(addprefix -I , $(header_directories))
 
-directories_to_search := "(lib/common/*|lib/high/*|lib/low/common/*|lib/low/KeccakP-1600/"$(TARGET)"/*)/.+"
-source_c := $(shell find * -type f -name "*.c" -regextype posix-egrep -regex $(directories_to_search))
-source_s := $(source) $(shell find * -type f -name "*.s" -regextype posix-egrep -regex $(directories_to_search))
+source_c := $(shell find lib/common lib/high lib/low/common lib/low/KeccakP-1600/$(TARGET) -type f -name "*.c")
+source_s := $(shell find lib/common lib/high lib/low/common lib/low/KeccakP-1600/$(TARGET) -type f -name "*.s")
 
 objects_c := $(addprefix build/, $(source_c:.c=.o))
 objects_s := $(addprefix build/, $(source_s:.s=.o))
@@ -74,11 +73,15 @@ XOP/ua:
 library: build/$(TARGET)$(SUB_TARGET)/keccak/libkeccak.a $(headers)
 	mkdir -p build/$(TARGET)$(SUB_TARGET)/keccak/libkeccak.a.headers
 	cp $(headers) build/$(TARGET)$(SUB_TARGET)/keccak/libkeccak.a.headers/
+	rm -rf build/lib &> /dev/null || true
 
 build/$(TARGET)$(SUB_TARGET)/keccak/libkeccak.a: $(objects_c) $(objects_s)
 	mkdir -p $(dir $@)
+ifeq ($(shell uname),Darwin)
+	libtool -static -o $@ $(objects_c) $(objects_s)
+else
 	$(AR) rcs $@ $(objects_c) $(objects_s)
-	rm -r build/lib/
+endif
 
 $(objects_c): build/%.o: %.c $(headers)
 	mkdir -p $(dir $@)
@@ -92,4 +95,4 @@ test: $(test_source) $(test_headers)
 	$(foreach implementation, $(implementations), $(shell $(CC) $(CCFLAGS) -o $(implementation)/test.out $(test_source) -I $(implementation)/keccak/libkeccak.a.headers -L $(implementation)/keccak -lkeccak))
 
 clean:
-	rm -rf build/ ShortMsgKAT_SHA3-224.txt ShortMsgKAT_SHA3-256.txt ShortMsgKAT_SHA3-384.txt ShortMsgKAT_SHA3-512.txt ShortMsgKAT_SHAKE128.txt ShortMsgKAT_SHAKE256.txt
+	rm -rf build/ ShortMsgKAT_SHA3-224.txt ShortMsgKAT_SHA3-256.txt ShortMsgKAT_SHA3-384.txt ShortMsgKAT_SHA3-512.txt ShortMsgKAT_SHAKE128.txt ShortMsgKAT_SHAKE256.txt &> /dev/null || true
